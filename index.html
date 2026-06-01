@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>FastJobs - Inicio</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Estilos adicionales específicos del inicio */
+        .welcome-section {
+            margin-top: 8px;
+        }
+        .greeting {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="header">
+            <div class="header-top">
+                <h1 class="logo">FastJobs</h1>
+                <button class="icon-btn" id="notificationsBtn">
+                    <i class="fa-regular fa-bell"></i>
+                </button>
+            </div>
+            <div class="welcome-section">
+                <h2 class="greeting">Hola, Laura</h2>
+                <p class="subtitle">¿Qué servicio necesitas hoy?</p>
+            </div>
+        </header>
+
+        <div class="search-section">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Buscar servicio..." id="searchInput">
+            </div>
+        </div>
+
+        <section class="categories">
+            <h3 class="section-title">Categorías</h3>
+            <div class="categories-grid">
+                <div class="category-card" data-category="limpieza">
+                    <div class="category-icon">🧹</div>
+                    <span>Limpieza</span>
+                </div>
+                <div class="category-card" data-category="electricidad">
+                    <div class="category-icon">⚡</div>
+                    <span>Electricidad</span>
+                </div>
+                <div class="category-card" data-category="jardineria">
+                    <div class="category-icon">🌿</div>
+                    <span>Jardinería</span>
+                </div>
+                <div class="category-card" data-category="plomeria">
+                    <div class="category-icon">🔧</div>
+                    <span>Plomería</span>
+                </div>
+                <div class="category-card" data-category="cerrajeria">
+                    <div class="category-icon">🔒</div>
+                    <span>Cerrajería</span>
+                </div>
+                <div class="category-card" data-category="mas">
+                    <div class="category-icon">➕</div>
+                    <span>Más</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="recommended">
+            <div class="section-header">
+                <h3 class="section-title">Recomendados cerca de ti</h3>
+                <button class="see-all" id="seeAllBtn">Ver todos</button>
+            </div>
+            <div class="workers-list" id="workersList"></div>
+        </section>
+
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item active">
+                <i class="fa-solid fa-house"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="seguimiento.html" class="nav-item">
+                <i class="fa-solid fa-truck-fast"></i>
+                <span>Seguimiento</span>
+            </a>
+            <a href="historial.html" class="nav-item">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Historial</span>
+            </a>
+            <a href="notificaciones.html" class="nav-item">
+                <i class="fa-regular fa-bell"></i>
+                <span>Notis</span>
+            </a>
+            <a href="perfil.html" class="nav-item">
+                <i class="fa-regular fa-user"></i>
+                <span>Perfil</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Datos específicos del inicio
+        const workersData = [
+            { id: 1, name: 'Juan Pérez', profession: 'Plomero', rating: 4.8, reviews: 120, price: 30000, distance: 2, category: 'plomeria' },
+            { id: 2, name: 'María López', profession: 'Limpieza', rating: 4.9, reviews: 95, price: 25000, distance: 1.5, category: 'limpieza' },
+            { id: 3, name: 'Carlos Ruiz', profession: 'Electricista', rating: 4.7, reviews: 80, price: 28000, distance: 3.5, category: 'electricidad' },
+            { id: 4, name: 'Luis Ramírez', profession: 'Cerrajero', rating: 4.6, reviews: 60, price: 30000, distance: 4, category: 'cerrajeria' }
+        ];
+
+        function renderWorkers(workers) {
+            const container = document.getElementById('workersList');
+            if (!container) return;
+            
+            container.innerHTML = workers.map(worker => `
+                <div class="worker-card">
+                    <div class="worker-info">
+                        <div class="worker-name">${worker.name}</div>
+                        <div class="worker-profession">${worker.profession}</div>
+                        <div class="worker-details">
+                            <span class="rating">⭐ ${worker.rating}</span>
+                            <span><i class="fa-regular fa-comment"></i> ${worker.reviews}</span>
+                            <span><i class="fa-regular fa-clock"></i> ${worker.distance} km</span>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="hire-btn" data-id="${worker.id}">Desde $${worker.price.toLocaleString()}</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.querySelectorAll('.hire-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const workerId = parseInt(btn.dataset.id);
+                    const worker = workersData.find(w => w.id === workerId);
+                    alert(`Contratando a ${worker.name}`);
+                    window.location.href = 'seguimiento.html';
+                });
+            });
+        }
+
+        function filterByCategory(category) {
+            if (category === 'mas') {
+                renderWorkers(workersData);
+                return;
+            }
+            const filtered = workersData.filter(w => w.category === category);
+            renderWorkers(filtered);
+        }
+
+        function searchWorkers(query) {
+            if (!query.trim()) {
+                renderWorkers(workersData);
+                return;
+            }
+            const filtered = workersData.filter(w => 
+                w.name.toLowerCase().includes(query.toLowerCase()) ||
+                w.profession.toLowerCase().includes(query.toLowerCase())
+            );
+            renderWorkers(filtered);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderWorkers(workersData);
+            
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const category = card.dataset.category;
+                    filterByCategory(category);
+                });
+            });
+            
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => searchWorkers(e.target.value));
+            }
+            
+            const seeAllBtn = document.getElementById('seeAllBtn');
+            if (seeAllBtn) {
+                seeAllBtn.addEventListener('click', () => renderWorkers(workersData));
+            }
+            
+            const notifBtn = document.getElementById('notificationsBtn');
+            if (notifBtn) {
+                notifBtn.addEventListener('click', () => {
+                    window.location.href = 'notificaciones.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
